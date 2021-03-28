@@ -4,7 +4,7 @@ class get_players_cmd {
   // プレイヤーの一覧を返す
   function exec(str) {
     local idx = 1
-    local str = "このゲームには以下のプレイヤーが参戦中や！\n"
+    local str = "プレイヤーの一覧\n"
     foreach (player in get_player_list()) {
       str += idx.tostring() + " : " + player.get_name() + "\n"
       idx += 1

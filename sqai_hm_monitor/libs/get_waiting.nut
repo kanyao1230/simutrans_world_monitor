@@ -24,7 +24,7 @@ class get_waiting_cmd {
       }
     }
     if(this_halt==null) {
-      f.writestr("停車場 " + sta_name + " ←ないです．")
+      f.writestr("停車場 「" + sta_name + "」 ←そんなのないよありえない :heta:")
       f.close() 
       return
     }

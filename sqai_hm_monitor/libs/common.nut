@@ -13,7 +13,7 @@ function get_player_from_num(str, idx) {
   }
   if(player==null || !player.is_valid()) {
     local f = file(path_output,"w")
-    f.writestr("そのプレイヤー番号はあかんわ．")
+    f.writestr("★プレイヤー番号が不正です★")
     f.close()
     return null
   } else {

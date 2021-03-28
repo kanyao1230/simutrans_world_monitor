@@ -45,7 +45,7 @@ class FileChangeHandler(FileSystemEventHandler):
 async def on_ready():
     # 起動したらターミナルにログイン通知が表示される
     channel = client.get_channel(config.CHANNEL_ID)
-    await channel.send('おはようさん．?をつけてなんでもいうてな．')
+    await channel.send('はいはいさらうどん')
 
 # メッセージ受信時に動作する処理
 @client.event
@@ -59,12 +59,12 @@ async def on_message(message):
     with open(FILE_CMD, encoding='utf-8') as f:
         s = f.read()
         if not s.startswith('empty') and not s.empty():
-            await channel.send('今忙しいねん')
+            await channel.send('Simutrans は応答していません。')
             return
     with open(FILE_CMD, mode='w', encoding='utf-8') as f:
         global waiting_message
         f.write(content[1:])
-        waiting_message = await channel.send('応答待ち．ちょっとまってな．')
+        waiting_message = await channel.send('処理中・・・')
         global prev_out_hash
         prev_out_hash = None
         

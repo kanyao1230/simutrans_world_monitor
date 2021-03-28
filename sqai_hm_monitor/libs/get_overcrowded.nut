@@ -26,12 +26,13 @@ class get_overcrowded_cmd {
     local och = _get_overcrowded_halts(player,1, 0)
     local out_str = ""
     if(och.len()==0) {
-      out_str = player.get_name() + " の駅に赤棒はないです．すばらしい．"
+      out_str = player.get_name() + " の管内に赤棒はありません！\nキミは　本当に、えらいっ！"
     } else {
-      out_str = player.get_name() + " の赤棒駅はこれや！\n"
+      out_str = player.get_name() + " 管内には 赤棒が " + och.len() + "個あります。反省しなさい。\n"
       foreach (h in och) {
-        out_str += (h.get_name() + " ... " + h.get_waiting()[0].tostring() + "/" + h.get_capacity(good_desc_x.passenger).tostring() + "人\n")
+        out_str += (h.get_name() + " ... 待機 " + h.get_waiting()[0].tostring() + " / 定員 " + h.get_capacity(good_desc_x.passenger).tostring() + "\n")
       }
+	  out_str += "※貨物駅などは赤棒でない場合があります"
     }
     f.writestr(rstrip(out_str))
     f.close() 
