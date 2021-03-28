@@ -4,7 +4,8 @@ class get_time_cmd {
   function exec(str) {
     local time = world.get_time()
     local f = file(path_output,"w")
-    f.writestr("ただいまの時刻" + time.year + "年" + time.month + "月になるところです。")
+	time.month += 1
+    f.writestr("ただいま " + time.year + "年 " + time.month + "月 になるところです。")
     f.close() 
   }
 }
