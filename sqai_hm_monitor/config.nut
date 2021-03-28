@@ -5,6 +5,7 @@ commands["プレイヤー"] <- get_players_cmd()
 commands["赤棒"] <- get_overcrowded_cmd()
 commands["赤帽"] <- get_overcrowded_cmd()
 commands["時間"] <- get_time_cmd()
+commands["財政"] <- get_finances_cmd()
 
 //モニタリング一覧．不要な機能があればコメントアウトしてください．
 monitored.append(chk_overcrowded_cmd(8, 1.5, 10000)) //赤棒検知． 引数...(頻度,警報を出す倍率, 警報を出す下限)
