@@ -1,11 +1,6 @@
+// メッセージ定義
+local text_invalid_cmd = "コマンド 「%s」 ←そんなのないよありえない <:heta:701840232290451476>"
 
-include("libs/global")
-include("libs/get_waiting")
-include("libs/get_players")
-include("libs/get_overcrowded")
-include("libs/get_time")
-include("libs/get_stucked")
-include("libs/get_finance")
 include("config")
 
 function start(pl_num) {
@@ -37,7 +32,7 @@ function process_request() {
     commands[cmd_str].exec(str)
   } else {
     local f = file(path_output,"w")
-    f.writestr("コマンド 「" + cmd_str + "」 ←そんなのないよありえない <:heta:701840232290451476>")
+    f.writestr(format(text_invalid_cmd, cmd_str))
     f.close()
   }
   f = file(path_cmd,"w")
