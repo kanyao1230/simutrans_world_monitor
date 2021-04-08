@@ -13,6 +13,9 @@ from watchdog.events import FileSystemEventHandler
 FILE_CMD = config.DIRECTORY + '/file_io/cmd.txt'
 FILE_OUT = config.DIRECTORY + '/file_io/out.txt'
 waiting_message = None
+
+CHANNEL_ID = config.CHANNEL_ID_1
+
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
 prev_out_hash = None #二重書き込み対策（主にWindows）
@@ -31,7 +34,7 @@ class FileChangeHandler(FileSystemEventHandler):
              if s=='empty' or hash==prev_out_hash:
                  return
              prev_out_hash = hash
-             ch = client.get_channel(config.CHANNEL_ID)
+             ch = client.get_channel(CHANNEL_ID)
              global waiting_message
              if waiting_message!=None:
                  coro = ch.delete_messages([waiting_message])
@@ -44,18 +47,34 @@ class FileChangeHandler(FileSystemEventHandler):
 @client.event
 async def on_ready():
     # 起動したらターミナルにログイン通知が表示される
-    channel = client.get_channel(config.CHANNEL_ID)
+    channel = client.get_channel(CHANNEL_ID)
     await channel.send(config.TEXT_HELLO)
 
 # メッセージ受信時に動作する処理
 @client.event
 async def on_message(message):
-    channel = client.get_channel(config.CHANNEL_ID)
+    global CHANNEL_ID
+    channel = client.get_channel(CHANNEL_ID)
     # 指定チャンネルでの指定フォーマットの人間のメッセージのみ反応
     content = message.content.replace('？','?').replace('，',',')
     if message.author.bot or message.channel != channel or content[0]!='?' or len(content)<2:
         return
-            
+    elif content == '?有鯖に切替' :
+        CHANNEL_ID = config.CHANNEL_ID_1
+        await channel.send(config.TEXT_SEEYOU)
+        channel = client.get_channel(CHANNEL_ID)
+        await channel.send(config.TEXT_CHANGE)
+        return
+    elif content == '?テスト鯖に切替' :
+        if message.author.id == config.KUKYURIN:
+            CHANNEL_ID = config.CHANNEL_ID_2
+            await channel.send(config.TEXT_SEEYOU)
+            channel = client.get_channel(CHANNEL_ID)
+            await channel.send(config.TEXT_CHANGE)
+            return
+        else :
+            await channel.send(config.TEXT_REJECT)
+            return
     with open(FILE_CMD, encoding='utf-8') as f:
         s = f.read()
         if s and not s.startswith('empty'):
