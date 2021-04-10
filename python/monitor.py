@@ -7,6 +7,7 @@ import time
 import asyncio
 import hashlib
 import config
+import koyan
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -75,6 +76,9 @@ async def on_message(message):
         else :
             await channel.send(config.TEXT_REJECT)
             return
+    elif content in koyan.koyans :
+        await channel.send(koyan.koyans[content])
+        return
     with open(FILE_CMD, encoding='utf-8') as f:
         s = f.read()
         if s and not s.startswith('empty'):
