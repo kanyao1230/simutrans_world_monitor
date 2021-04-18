@@ -1,5 +1,5 @@
 // メッセージ定義
-local text_title = "この路線渋滞してんで．やばいんとちゃうか．\n"
+local text_title = "停滞中の路線があります\n"
 local text_player_title = "<%s>\n" //%sはプレイヤー名
 
 include("libs/monitoring_base")

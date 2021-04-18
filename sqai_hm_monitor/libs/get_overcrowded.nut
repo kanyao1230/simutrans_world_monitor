@@ -4,7 +4,7 @@ local textc_no_player = "%s 管内に赤棒はありません！\nキミは　�
 local textc_player_title = "%s  管内には 赤棒が %d 本 あります。反省しなさい\n" //%sはプレイヤー名
 local textc_halt_info = "%s ... 待機 %d / 定員 %d\n" //赤棒状態の停留所情報． %sは停留所名． %dは待機数，定員．
 // 監視によるメッセージ
-local textm_oc_exists = "赤棒立ってる駅あるで．\n"
+local textm_oc_exists = "赤棒がたっている駅があります\n"
 local textm_player_title = "<%s>\n" //%sはプレイヤー名
 
 include("libs/monitoring_base")
