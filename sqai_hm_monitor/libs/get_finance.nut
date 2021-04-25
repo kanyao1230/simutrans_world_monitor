@@ -1,5 +1,5 @@
 // メッセージ定義
-local text_title = "有り金はこんな感じや！\n"
+local text_title = "財務状態！\n"
 local text_money_info = "%s:  %s￠\n"
 
 include("libs/common")
