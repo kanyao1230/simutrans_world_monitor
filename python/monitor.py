@@ -7,7 +7,7 @@ import time
 import asyncio
 import hashlib
 import config
-import koyan
+import koyan, tere
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -59,6 +59,9 @@ async def on_message(message):
     # 指定チャンネルでの指定フォーマットの人間のメッセージのみ反応
     content = message.content.replace('？','?').replace('，',',')
     if message.author.bot or message.channel != channel or content[0]!='?' or len(content)<2:
+        return
+    elif content == '?ﾃﾚｰ' :
+        await tere.teree(message)
         return
     elif content == '?有鯖に切替' :
         CHANNEL_ID = config.CHANNEL_ID_1
