@@ -1,14 +1,12 @@
-// メッセージ定義
-local text_invalid_cmd = "コマンド 「%s」 ←そんなのないよありえない <:heta:701840232290451476>"
-
 include("config")
+include("libs/get_help")
 
 function start(pl_num) {
   
 }
 
 function resume_game(pl_num) {
-  
+  monitoring_state().load()
 }
 
 // リクエストが実行されたときにはtrueを返す．
@@ -31,9 +29,7 @@ function process_request() {
   if(cmd_str in commands) {
     commands[cmd_str].exec(str)
   } else {
-    local f = file(path_output,"w")
-    f.writestr(format(text_invalid_cmd, cmd_str))
-    f.close()
+    send_help(cmd_str)
   }
   f = file(path_cmd,"w")
   f.writestr("empty")

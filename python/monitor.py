@@ -3,15 +3,14 @@
 
 import discord
 import os
-import time
-import asyncio
-import hashlib
 import config
 import koyan, tere
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from libs.FileChangeHandler import FileChangeHandler
+from libs.vars import *
 
 FILE_CMD = config.DIRECTORY + '/file_io/cmd.txt'
+<<<<<<< HEAD
 FILE_OUT = config.DIRECTORY + '/file_io/out.txt'
 waiting_message = None
 
@@ -43,13 +42,20 @@ class FileChangeHandler(FileSystemEventHandler):
                  waiting_message = None
              coro = ch.send(s)
              asyncio.run_coroutine_threadsafe(coro, client.loop)
+=======
+>>>>>>> main
 
 # 起動時に動作する処理
 @client.event
 async def on_ready():
     # 起動したらターミナルにログイン通知が表示される
+<<<<<<< HEAD
     channel = client.get_channel(CHANNEL_ID)
     await channel.send(config.TEXT_HELLO)
+=======
+    channel = client.get_channel(config.CHANNEL_ID)
+    await channel.send(embed=discord.Embed(title=config.TEXT_HELLO, color=0x00ff00))
+>>>>>>> main
 
 # メッセージ受信時に動作する処理
 @client.event
@@ -57,7 +63,7 @@ async def on_message(message):
     global CHANNEL_ID
     channel = client.get_channel(CHANNEL_ID)
     # 指定チャンネルでの指定フォーマットの人間のメッセージのみ反応
-    content = message.content.replace('？','?').replace('，',',')
+    content = message.content.replace('？','?').replace('，',',').replace('、',',')
     if message.author.bot or message.channel != channel or content[0]!='?' or len(content)<2:
         return
     elif content == '?ﾃﾚｰ' :
@@ -88,19 +94,14 @@ async def on_message(message):
             await channel.send(config.TEXT_BUSY)
             return
     with open(FILE_CMD, mode='w', encoding='utf-8') as f:
-        global waiting_message
         f.write(content[1:])
-        waiting_message = await channel.send(config.TEXT_WAIT)
-        global prev_out_hash
-        prev_out_hash = None
+        set_waiting_message(await channel.send(config.TEXT_WAIT))
+        set_prev_out_hash(None)
         
 def generate_io_files():
     os.makedirs(config.DIRECTORY+'/file_io', exist_ok=True)
     if not os.path.isfile(FILE_CMD):
         with open(FILE_CMD, mode='w', encoding='utf-8') as f:
-            f.write('empty')
-    if not os.path.isfile(FILE_OUT):
-        with open(FILE_OUT, mode='w', encoding='utf-8') as f:
             f.write('empty')
 
 def start():

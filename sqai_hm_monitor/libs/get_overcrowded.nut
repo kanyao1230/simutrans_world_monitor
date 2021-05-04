@@ -9,6 +9,7 @@ local textm_player_title = "<%s>\n" //%sはプレイヤー名
 
 include("libs/monitoring_base")
 include("libs/common")
+include("libs/embed_out")
 
 // playerがnullのときは全てのplayerを検査対象とする．
 function _get_overcrowded_halts(player, ratio, akabo) {
@@ -30,64 +31,63 @@ class get_overcrowded_cmd {
     if(player==null) {
       return //エラーメッセージは既に吐かれている．
     }
-    local f = file(path_output,"w")
     local params = split(str,",")
     local och = _get_overcrowded_halts(player,1, 0)
-    local out_str = ""
     if(och.len()==0) {
-      out_str = format(textc_no_player, player.get_name())
+      embed_normal(format(textc_no_player, player.get_name()))
     } else {
-      out_str = format(textc_player_title, player.get_name(), och.len())
+      local title = format(textc_player_title, player.get_name(), och.len())
+      local desc = ""
       foreach (h in och) {
-        out_str += format(textc_halt_info, h.get_name(), h.get_waiting()[0], h.get_capacity(good_desc_x.passenger))
+        desc += format(textc_halt_info, h.get_name(), h.get_waiting()[0], h.get_capacity(good_desc_x.passenger))
       }
-	  out_str += "※貨物駅などは赤棒でない場合があります"
+	    desc += "※貨物駅などは赤棒でない場合があります"
+      embed_warn(title, desc)
     }
-    f.writestr(rstrip(out_str))
-    f.close() 
   }
 }
 
 
 class chk_overcrowded_cmd extends monitoring_base_cmd {
-  overcrowded_halts = []
   warning_ratio = 1.0
   akabo_max = 1000
   
   constructor(freq, ratio, akabo) {
     monthly_check_time = freq
     warning_ratio = ratio
-	akabo_max = akabo
+	  akabo_max = akabo
+    init_states("chk_overcrowded_cmd", [["och", []]])
   }
   
   function do_check() {
+    local ms = monitoring_state()
     local och = _get_overcrowded_halts(null, warning_ratio, akabo_max)
-    local prev_och = overcrowded_halts //ラムダ式のために必要
+    local prev_och = ms.state[task_name]["och"] // nameのstring値が格納されている
     // なぜかhalt_xのinstance比較がいつもfalseになるので，nameで比較する．
     // あたらしくovercrowdedになったhalt
-    local new_och = filter(och, (@(h) filter(prev_och, (@(k) k.get_name()==h.get_name())).len()==0))
-    overcrowded_halts = och //更新
+    local new_och = filter(och, (@(h) filter(prev_och, (@(k) k==h.get_name())).len()==0))
+    ms.state[task_name]["och"] = map(och, (@(h) h.get_name())) //更新
+    ms.save()
     if(new_och.len()==0) {
       // 新しく混雑した駅はないので，終了．
       return
     }
     
     // プレイヤーごとにまとめる
+    local new_och_msg = []
     local player_new_och = map(get_player_list(), (@(p) [p, filter(new_och, (@(h) p.get_name()==h.get_owner().get_name()))]))
-    local out_str = textm_oc_exists
     foreach (pn in player_new_och) {
       if(pn[1].len()==0) {
         //この会社に混雑してる駅はない．
         continue
       }
-      out_str += format(textm_player_title, pn[0].get_name())
+      local pl_title = format(textm_player_title, pn[0].get_name())
+      local out_str = ""
       foreach (h in pn[1]) {
         out_str += format(textc_halt_info, h.get_name(), h.get_waiting()[0], h.get_capacity(good_desc_x.passenger))
       }
+      new_och_msg.append([pl_title, out_str])
     }
-    
-    local f = file(path_output,"w")
-    f.writestr(rstrip(out_str))
-    f.close()
+    embed_warn(textm_oc_exists, null, new_och_msg)
   }
 }
