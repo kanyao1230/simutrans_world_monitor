@@ -10,52 +10,14 @@ from libs.FileChangeHandler import FileChangeHandler
 from libs.vars import *
 
 FILE_CMD = config.DIRECTORY + '/file_io/cmd.txt'
-<<<<<<< HEAD
-FILE_OUT = config.DIRECTORY + '/file_io/out.txt'
-waiting_message = None
-
 CHANNEL_ID = config.CHANNEL_ID_1
-
-# 接続に必要なオブジェクトを生成
-client = discord.Client()
-prev_out_hash = None #二重書き込み対策（主にWindows）
-
-class FileChangeHandler(FileSystemEventHandler):
-     # ファイル変更時のイベント
-     def on_modified(self, event):
-         filepath = event.src_path
-         filename = os.path.basename(filepath)
-         if(filename!="out.txt"):
-             return
-         with open(FILE_OUT, encoding='utf-8') as f:
-             s = f.read()[:1990]
-             hash = hashlib.md5(s.encode()).hexdigest()
-             global prev_out_hash
-             if s=='empty' or hash==prev_out_hash:
-                 return
-             prev_out_hash = hash
-             ch = client.get_channel(CHANNEL_ID)
-             global waiting_message
-             if waiting_message!=None:
-                 coro = ch.delete_messages([waiting_message])
-                 asyncio.run_coroutine_threadsafe(coro, client.loop)
-                 waiting_message = None
-             coro = ch.send(s)
-             asyncio.run_coroutine_threadsafe(coro, client.loop)
-=======
->>>>>>> main
 
 # 起動時に動作する処理
 @client.event
 async def on_ready():
     # 起動したらターミナルにログイン通知が表示される
-<<<<<<< HEAD
     channel = client.get_channel(CHANNEL_ID)
-    await channel.send(config.TEXT_HELLO)
-=======
-    channel = client.get_channel(config.CHANNEL_ID)
     await channel.send(embed=discord.Embed(title=config.TEXT_HELLO, color=0x00ff00))
->>>>>>> main
 
 # メッセージ受信時に動作する処理
 @client.event
