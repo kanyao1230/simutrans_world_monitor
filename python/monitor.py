@@ -24,6 +24,7 @@ async def on_ready():
 async def on_message(message):
     global CHANNEL_ID
     channel = client.get_channel(CHANNEL_ID)
+    FileChangeHandler.switch_text_channel(CHANNEL_ID)
     # 指定チャンネルでの指定フォーマットの人間のメッセージのみ反応
     content = message.content.replace('？','?').replace('，',',').replace('、',',')
     if message.author.bot or message.channel != channel or content[0]!='?' or len(content)<2:
@@ -32,23 +33,32 @@ async def on_message(message):
         await tere.teree(message)
         return
     elif content == '?有鯖に切替' :
-        CHANNEL_ID = config.CHANNEL_ID_1
-        await channel.send(config.TEXT_SEEYOU)
-        channel = client.get_channel(CHANNEL_ID)
-        await channel.send(config.TEXT_CHANGE)
-        return
-    elif content == '?テスト鯖に切替' :
-        if message.author.id == config.KUKYURIN:
-            CHANNEL_ID = config.CHANNEL_ID_2
-            await channel.send(config.TEXT_SEEYOU)
-            channel = client.get_channel(CHANNEL_ID)
-            await channel.send(config.TEXT_CHANGE)
+        if message.channel.id == config.CHANNEL_ID_1 :
+            await channel.send(embed=discord.Embed(title='すでに有鯖にいます', color=0xff0000))
             return
         else :
-            await channel.send(config.TEXT_REJECT)
+            CHANNEL_ID = config.CHANNEL_ID_1
+            await channel.send(embed=discord.Embed(title=config.TEXT_SEEYOU, color=0x00ff00))
+            channel = client.get_channel(CHANNEL_ID)
+            FileChangeHandler.switch_text_channel(CHANNEL_ID)
+            await channel.send(embed=discord.Embed(title=config.TEXT_CHANGE, color=0x00ff00))
+            return
+    elif content == '?テスト鯖に切替' :
+        if message.channel.id == config.CHANNEL_ID_2 :
+            await channel.send(embed=discord.Embed(title='すでにテスト鯖にいます', color=0xff0000))
+            return
+        elif message.author.id == config.KUKYURIN:
+            CHANNEL_ID = config.CHANNEL_ID_2
+            await channel.send(embed=discord.Embed(title=config.TEXT_SEEYOU, color=0x00ff00))
+            channel = client.get_channel(CHANNEL_ID)
+            FileChangeHandler.switch_text_channel(CHANNEL_ID)
+            await channel.send(embed=discord.Embed(title=config.TEXT_CHANGE, color=0x00ff00))
+            return
+        else :
+            await channel.send(embed=discord.Embed(title=config.TEXT_REJECT, color=0xff0000))
             return
     elif content in koyan.koyans :
-        await channel.send(koyan.koyans[content])
+        await channel.send(embed=discord.Embed(title=koyan.koyans[content][0], color=koyan.koyans[content][1]))
         return
     with open(FILE_CMD, encoding='utf-8') as f:
         s = f.read()

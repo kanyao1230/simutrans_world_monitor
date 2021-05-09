@@ -30,7 +30,7 @@ class FileChangeHandler(FileSystemEventHandler):
             s = f.read()[:1990]
             if s=='empty' or self.is_same_message(s):
                 return
-            ch = client.get_channel(config.CHANNEL_ID)
+            ch = client.get_channel(CHANNEL_ID)
             self.remove_waiting_message(ch)
             coro = ch.send(s)
             asyncio.run_coroutine_threadsafe(coro, client.loop)
@@ -40,7 +40,7 @@ class FileChangeHandler(FileSystemEventHandler):
             s = f.read()
             if len(s)==0 or self.is_same_message(s):
                 return
-            ch = client.get_channel(config.CHANNEL_ID)
+            ch = client.get_channel(CHANNEL_ID)
             self.remove_waiting_message(ch)
             jo = json.JSONDecoder().raw_decode(s)[0]
             embed = discord.Embed(title=jo["title"], description=jo["description"], color=jo["color"])
@@ -61,3 +61,7 @@ class FileChangeHandler(FileSystemEventHandler):
         elif filename=="out_embed.json" :
             self.embed_out()
             pass
+
+    def switch_text_channel(CHANNEL_ID_NOW):
+        global CHANNEL_ID
+        CHANNEL_ID = CHANNEL_ID_NOW

@@ -1,6 +1,6 @@
 // メッセージ定義
 local text_require_param = "路線を番号で指定してください．"
-local text_invalid_param = "%d 号系統は存在しないよ"
+local text_invalid_param = "%s 号系統は存在しないよ"
 local text_halt_title_rank = "%s （%s）の停車駅（乗降客数順） \n" //%sは停留所名, 会社名
 local text_halt_rank = "%s 人 ... %s\n" //%sは乗降客数，駅名
 local text_halt_caption_rank = "※乗降客数は前月の実績です"
